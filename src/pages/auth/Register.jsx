@@ -120,7 +120,7 @@ const Register = () => {
           <div className="flex flex-col gap-y-4" onKeyPress={handleKeyPress}>
             <div>
               <input
-                className={`w-full px-4 py-3 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${errors.fullName ? "border-red-500" : "border-gray-300"}`}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${errors.fullName ? "border-red-500" : "border-black"}`}
                 type="text"
                 name="fullName"
                 value={formData.fullName}
@@ -133,7 +133,7 @@ const Register = () => {
 
             <div>
               <input
-                className={`w-full px-4 py-3 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${errors.email ? "border-red-500" : "border-gray-300"}`}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${errors.email ? "border-red-500" : "border-black"}`}
                 type="email"
                 name="email"
                 value={formData.email}
@@ -146,7 +146,7 @@ const Register = () => {
 
             <div>
               <input
-                className={`w-full px-4 py-3 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${errors.password ? "border-red-500" : "border-gray-300"}`}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${errors.password ? "border-red-500" : "border-black"}`}
                 type="password"
                 name="password"
                 value={formData.password}
@@ -159,7 +159,7 @@ const Register = () => {
 
             <div>
               <input
-                className={`w-full px-4 py-3 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${errors.confirmPassword ? "border-red-500" : "border-gray-300"}`}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${errors.confirmPassword ? "border-red-500" : "border-black"}`}
                 type="password"
                 name="confirmPassword"
                 value={formData.confirmPassword}

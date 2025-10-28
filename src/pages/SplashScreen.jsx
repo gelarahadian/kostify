@@ -1,6 +1,26 @@
 import logo from "../assets/images/kostify-logo.png";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SplashScreen = () => {
+  const navigate = useNavigate();
+  const [isExiting, setIsExiting] = useState(false);
+
+  useEffect(() => {
+    const exitTimer = setTimeout(() => {
+      setIsExiting(true);
+    }, 2550); // start exit animation slightly before redirect
+
+    const navTimer = setTimeout(() => {
+      navigate("/login", { replace: true });
+    }, 3000);
+
+    return () => {
+      clearTimeout(exitTimer);
+      clearTimeout(navTimer);
+    };
+  }, [navigate]);
+
   return (
     <div className="relative w-full h-screen flex items-center justify-center overflow-hidden font-sans">
       {/* Animated Gradient Background */}
@@ -30,7 +50,7 @@ const SplashScreen = () => {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex gap-x-11 items-center">
+      <div className={`relative z-10 flex gap-x-11 items-center ${isExiting ? "exit-up" : ""}`}>
         {/* Logo dengan animasi bounce + fade in */}
         <div className="logo-container">
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 shadow-2xl">
@@ -126,11 +146,7 @@ const SplashScreen = () => {
         }
 
         .logo-container {
-          animation: fadeInBounce 1s ease-out;
-        }
-
-        .logo-container:hover {
-          animation: float 2s ease-in-out infinite;
+          animation: fadeInBounce 1s ease-out, float 3s ease-in-out infinite 1s;
         }
 
         .text-container {
@@ -139,10 +155,7 @@ const SplashScreen = () => {
 
         .text-container h1 {
           text-shadow: 0 0 40px rgba(167, 139, 250, 0.5);
-        }
-
-        .text-container:hover h1 {
-          animation: wiggle 0.5s ease-in-out;
+          animation: wiggle 4s ease-in-out infinite 1.5s;
         }
 
         @keyframes wiggle {
@@ -156,6 +169,21 @@ const SplashScreen = () => {
           75% {
             transform: rotate(2deg);
           }
+        }
+
+        @keyframes exitUp {
+          0% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(-60px);
+          }
+        }
+
+        .exit-up {
+          animation: exitUp 0.45s ease forwards;
         }
       `}</style>
     </div>
