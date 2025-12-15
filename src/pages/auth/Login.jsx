@@ -1,8 +1,12 @@
+"use client";
+
 import logo from "../../assets/images/kostify-black.png";
 import topGarnish from "../../assets/garnish/TopCircle.svg";
 import bottomGarnish from "../../assets/garnish/BottomWave.svg";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSignIn } from "../../hooks/auth.hook";
+import { toast } from "sonner";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +17,8 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const signInMutation = useSignIn();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -60,35 +66,38 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      // Simulasi API call - ganti dengan endpoint login Anda
-      // Contoh: const response = await axios.post('/api/login', formData);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      console.log("Login data:", {
-        email: formData.email,
-        password: formData.password,
-      });
-
-      // Simulasi response sukses
-      const mockResponse = {
-        success: true,
-        token: "mock-jwt-token-12345",
-        user: {
-          id: 1,
+      signInMutation.mutate(
+        {
           email: formData.email,
-          name: "John Doe",
+          password: formData.password,
         },
-      };
+        {
+          onSuccess: (res) => {
+            localStorage.setItem("token", res.data.accessToken);
+            localStorage.setItem("user", JSON.stringify(res.data.owner));
+            toast.success("Login Successfully");
+          },
+          onError: (error) => {
+            console.log(error);
+            if (error.response) {
+              // Error dari server
+              if (error.response.status === 401) {
+                toast.error("Invalid email or password");
+              } else if (error.response.status === 404) {
+                toast.error("Account not found");
+              } else {
+                toast.error("Login failed. Please try again.");
+              }
+            } else {
+              // Network error atau error lainnya
+              toast.error("Network error. Please check your connection.");
+            }
+          },
+        }
+      );
 
-      // Simpan token ke localStorage (atau gunakan context/redux)
       // localStorage.setItem('token', mockResponse.token);
       // localStorage.setItem('user', JSON.stringify(mockResponse.user));
-
-      alert("Login successful!");
-
-      // Redirect ke dashboard atau home page
-      // window.location.href = '/dashboard';
-      // atau gunakan react-router: navigate('/dashboard');
     } catch (error) {
       console.error("Login error:", error);
 
@@ -143,7 +152,11 @@ const Login = () => {
           <div className="flex flex-col gap-y-6" onKeyPress={handleKeyPress}>
             <div>
               <input
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${errors.email ? "border-red-500 focus:ring-red-500" : "border-black"}`}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${
+                  errors.email
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-black"
+                }`}
                 type="email"
                 name="email"
                 value={formData.email}
@@ -152,13 +165,19 @@ const Login = () => {
                 disabled={isLoading}
                 autoComplete="email"
               />
-              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
             </div>
 
             <div>
               <div className="relative">
                 <input
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${errors.password ? "border-red-500 focus:ring-red-500" : "border-black"}`}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${
+                    errors.password
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-black"
+                  }`}
                   type={showPassword ? "text" : "password"}
                   name="password"
                   value={formData.password}
@@ -167,9 +186,19 @@ const Login = () => {
                   disabled={isLoading}
                   autoComplete="current-password"
                 />
-                <button type="button" onClick={togglePasswordVisibility} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black transition-colors" disabled={isLoading}>
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black transition-colors"
+                  disabled={isLoading}
+                >
                   {showPassword ? (
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -178,22 +207,45 @@ const Login = () => {
                       />
                     </svg>
                   ) : (
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                      />
                     </svg>
                   )}
                 </button>
               </div>
-              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
             </div>
 
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="w-4 h-4 rounded border-2 border-black focus:ring-2 focus:ring-black" />
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded border-2 border-black focus:ring-2 focus:ring-black"
+                />
                 <span>Remember me</span>
               </label>
-              <Link to="/forgot-password" className="text-black hover:underline font-medium">
+              <Link
+                to="/forgot-password"
+                className="text-black hover:underline font-medium"
+              >
                 Forgot Password?
               </Link>
             </div>
@@ -213,7 +265,10 @@ const Login = () => {
 
             <div className="text-center text-sm mt-2">
               <span className="text-gray-600">Don't have an account? </span>
-              <Link to="/register" className="text-black font-bold hover:underline">
+              <Link
+                to="/register"
+                className="text-black font-bold hover:underline"
+              >
                 Sign Up
               </Link>
             </div>
