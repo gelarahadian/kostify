@@ -7,23 +7,30 @@ import ResetPassword from "./pages/auth/ResetPassword";
 import { QueryProvider } from "./components/providers/QueryProvider";
 import ToasterProvider from "./components/providers/ToasterProvider";
 import EventBusProvider from "./components/providers/EventBusProvider";
+import DashboardLayout from "./pages/dashboard/DashboardLayout";
+import DashboardHome from "./pages/dashboard/DashboardHome";
 
 function App() {
   return (
-    <div>
+    <div className="font-poppins">
       <QueryProvider>
         <ToasterProvider>
-          <EventBusProvider>
-            <Router>
+          <Router>
+            <EventBusProvider>
               <Routes>
                 <Route path="/" element={<SplashScreen />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+
+                {/* Dashboard */}
+                <Route path="/dashboard" element={<DashboardLayout />}>
+                  <Route index element={<DashboardHome />} />
+                </Route>
               </Routes>
-            </Router>
-          </EventBusProvider>
+            </EventBusProvider>
+          </Router>
         </ToasterProvider>
       </QueryProvider>
     </div>
