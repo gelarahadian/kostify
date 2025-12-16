@@ -2,17 +2,24 @@ import logo from "../../assets/images/kostify-black.png";
 import topGarnish from "../../assets/garnish/TopCircle.svg";
 import bottomGarnish from "../../assets/garnish/BottomWave.svg";
 import { useState } from "react";
+import { useSignUp } from "../../hooks/auth.hook";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
+    phone: "",
     password: "",
     confirmPassword: "",
   });
 
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
+  const { mutate: signUp, status } = useSignUp();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,6 +47,10 @@ const Register = () => {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email is invalid";
+    }
+
+    if (!formData.phone) {
+      newErrors.phone = "Phone number is required";
     }
 
     if (!formData.password) {
@@ -70,24 +81,30 @@ const Register = () => {
     setIsLoading(true);
 
     try {
-      // Simulasi API call - ganti dengan API endpoint Anda
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      console.log("Registration data:", {
-        fullName: formData.fullName,
-        email: formData.email,
-        password: formData.password,
-      });
-
-      // Reset form setelah sukses
-      setFormData({
-        fullName: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      });
-
-      alert("Registration successful!");
+      signUp(
+        {
+          name: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+        },
+        {
+          onSuccess: (res) => {
+            toast.success("Register Successfully");
+            setFormData({
+              fullName: "",
+              email: "",
+              phone: "",
+              password: "",
+              confirmPassword: "",
+            });
+            navigate("/login");
+          },
+          onError: (err) => {
+            toast.error("Login failed. Please try again.");
+          },
+        }
+      );
     } catch (error) {
       console.error("Registration error:", error);
       alert("Registration failed. Please try again.");
@@ -120,7 +137,9 @@ const Register = () => {
           <div className="flex flex-col gap-y-4" onKeyPress={handleKeyPress}>
             <div>
               <input
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${errors.fullName ? "border-red-500" : "border-black"}`}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${
+                  errors.fullName ? "border-red-500" : "border-black"
+                }`}
                 type="text"
                 name="fullName"
                 value={formData.fullName}
@@ -128,12 +147,16 @@ const Register = () => {
                 placeholder="Full Name"
                 disabled={isLoading}
               />
-              {errors.fullName && <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>}
+              {errors.fullName && (
+                <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
+              )}
             </div>
 
             <div>
               <input
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${errors.email ? "border-red-500" : "border-black"}`}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${
+                  errors.email ? "border-red-500" : "border-black"
+                }`}
                 type="email"
                 name="email"
                 value={formData.email}
@@ -141,12 +164,33 @@ const Register = () => {
                 placeholder="Email Address"
                 disabled={isLoading}
               />
-              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
             </div>
 
             <div>
               <input
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${errors.password ? "border-red-500" : "border-black"}`}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${
+                  errors.email ? "border-red-500" : "border-black"
+                }`}
+                type="text"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="Phone Number"
+                disabled={isLoading}
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
+            </div>
+
+            <div>
+              <input
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${
+                  errors.password ? "border-red-500" : "border-black"
+                }`}
                 type="password"
                 name="password"
                 value={formData.password}
@@ -154,12 +198,16 @@ const Register = () => {
                 placeholder="Password"
                 disabled={isLoading}
               />
-              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
             </div>
 
             <div>
               <input
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${errors.confirmPassword ? "border-red-500" : "border-black"}`}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all ${
+                  errors.confirmPassword ? "border-red-500" : "border-black"
+                }`}
                 type="password"
                 name="confirmPassword"
                 value={formData.confirmPassword}
@@ -167,7 +215,11 @@ const Register = () => {
                 placeholder="Confirm Password"
                 disabled={isLoading}
               />
-              {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.confirmPassword}
+                </p>
+              )}
             </div>
 
             <button

@@ -4,7 +4,7 @@ import logo from "../../assets/images/kostify-black.png";
 import topGarnish from "../../assets/garnish/TopCircle.svg";
 import bottomGarnish from "../../assets/garnish/BottomWave.svg";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSignIn } from "../../hooks/auth.hook";
 import { toast } from "sonner";
 
@@ -17,6 +17,8 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
 
   const signInMutation = useSignIn();
 
@@ -76,6 +78,7 @@ const Login = () => {
             localStorage.setItem("token", res.data.accessToken);
             localStorage.setItem("user", JSON.stringify(res.data.owner));
             toast.success("Login Successfully");
+            navigate("/dashboard");
           },
           onError: (error) => {
             console.log(error);
