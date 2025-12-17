@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react";
 import React from "react";
 
-const ListRooms = ({ rooms }) => {
+const ListRooms = ({ rooms, setOpenDetailRoom }) => {
   return (
     <div className="flex flex-wrap gap-3 ">
       {rooms?.map((room) => (
@@ -23,7 +23,10 @@ const ListRooms = ({ rooms }) => {
           </div>
           <h2 className="text-sm font-light mb-2">Rp 700.000/bulan</h2>
           <p className="mb-4">{room.description}</p>
-          <button className="h-10 rounded-md w-full flex justify-center items-center bg-[#578FCA] text-white mt-auto hover:bg-[#578FCA]/90 transition duration-200">
+          <button
+            onClick={() => setOpenDetailRoom(room.room_id)}
+            className="h-10 rounded-md w-full flex justify-center items-center bg-[#578FCA] text-white mt-auto hover:bg-[#578FCA]/90 transition duration-200"
+          >
             Detail
           </button>
         </div>
