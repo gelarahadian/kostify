@@ -5,8 +5,8 @@ import DashboardSidebar from './DashboardSidebar/DashboardSidebar';
 const DashboardLayout = () => {
   return (
     <div className="flex">
-      <DashboardSidebar/>
-      <main>
+      <DashboardSidebar />
+      <main className="w-full bg-[#F0F7FF]">
         <Outlet />
       </main>
     </div>

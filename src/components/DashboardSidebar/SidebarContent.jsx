@@ -1,8 +1,10 @@
 import React from 'react'
 import { Icon } from "@iconify/react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const SidebarContent = () => {
+  const location = useLocation();
+  console.log(location.pathname);
   const navs = [
     {
       type: 1,
@@ -53,6 +55,7 @@ const SidebarContent = () => {
     <div className="px-7 py-16">
       <div>
         {navs.map((nav, i) => {
+          const isActive = location.pathname === nav.route;
           return nav.type === 1 ? (
             <h2
               key={i}
@@ -62,14 +65,25 @@ const SidebarContent = () => {
             </h2>
           ) : (
             <Link to={nav.route} key={i}>
-              <div className="px-9 py-7 flex space-x-5 items-center hover:bg-[#3674B5]/10 rounded-md group transition duration-200 cursor-pointer">
+              <div
+                className={`px-9 py-7 flex space-x-5 items-center hover:bg-[#3674B5]/10 rounded-md group transition duration-200 cursor-pointer ${
+                  isActive && "bg-[#3674B5]/10"
+                }`}
+              >
                 <Icon
                   icon={nav.icon}
                   width="24"
                   height="24"
-                  className="text-gray-600 group-hover:text-[#3674B5]"
+                  //   color="currentColor"
+                  className={` group-hover:text-[#3674B5] ${
+                    isActive ? "text-[#3674B5]" : "text-gray-600"
+                  }`}
                 />
-                <span className="group-hover:text-[#3674B5] font-medium text-sm">
+                <span
+                  className={`group-hover:text-[#3674B5] font-medium text-sm ${
+                    isActive && "text-[#3674B5]"
+                  }`}
+                >
                   {nav.title}
                 </span>
               </div>
