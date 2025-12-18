@@ -10,10 +10,11 @@ export const useAddRoom = () => useMutation({
     mutationFn: addRoom
 })
 
-export const useGetRoomsByOwnerId = (ownerId) => useQuery({
-    queryKey: ['rooms', ownerId],
-    queryFn: () => getRoomsByOwnerId(ownerId)
-})
+export const useGetRoomsByOwnerId = () =>
+  useQuery({
+    queryKey: ["roomsbyownerid"],
+    queryFn: getRoomsByOwnerId,
+  });
 
 export const useGetRoomById = (id) => useQuery({
     queryKey: ['room', id],

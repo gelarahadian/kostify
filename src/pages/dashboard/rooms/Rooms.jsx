@@ -1,15 +1,16 @@
 import { Icon } from "@iconify/react";
 import React, { useEffect, useState } from "react";
-import FilterRooms from "../../components/Rooms/FilterRooms";
-import ListRooms from "../../components/Rooms/ListRooms";
-import { useGetRooms } from "../../hooks/room.hook";
-import DialogDetailRoom from "../../components/Rooms/DialogDetailRoom";
+import FilterRooms from "../../../components/Rooms/FilterRooms";
+import ListRooms from "../../../components/Rooms/ListRooms";
+import { useGetRooms, useGetRoomsByOwnerId } from "../../../hooks/room.hook";
+import DialogDetailRoom from "./DialogDetailRoom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 const Rooms = () => {
   const [selectedFilter, setSelectedFilter] = useState("semua");
-  const [openDetailRoom, setOpenDetailRoom] = useState(0);
+  const navigate = useNavigate()
 
-  const { data, isLoading } = useGetRooms();
+  const { data, isLoading } = useGetRoomsByOwnerId();
   const rooms = data?.data?.data;
   console.log(rooms);
   return (
@@ -21,7 +22,7 @@ const Rooms = () => {
             Informasi seluruh data kamar dan fasilitas didalamnya
           </p>
         </div>
-        <button>
+        <button onClick={() => navigate("/dashboard/rooms/add")}>
           <Icon
             icon="icon-park-solid:add"
             className="text-[#3674B5]"
@@ -34,11 +35,8 @@ const Rooms = () => {
         selectedFilter={selectedFilter}
         setSelectedFilter={setSelectedFilter}
       />
-      <ListRooms rooms={rooms} setOpenDetailRoom={setOpenDetailRoom} />
-      <DialogDetailRoom
-        open={openDetailRoom ? true : false}
-        onClose={() => setOpenDetailRoom(0)}
-      />
+      <ListRooms rooms={rooms} />
+      <Outlet />
     </main>
   );
 };
