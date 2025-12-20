@@ -19,13 +19,15 @@ const ListRooms = ({ rooms }) => {
             className="h-40 object-cover rounded-md mb-3"
           />
           <div className="flex justify-between items-center">
-            <h1 className="font-medium text-xl">Kamar 1</h1>
+            <h1 className="font-medium text-xl">{room.room_name}</h1>
             <p className="font-normal text-xs flex space-x-2">
               <Icon icon="iconamoon:profile-thin" width="16" height="16" />
-              <span>1 orang</span>
+              <span>{room.capacity} orang</span>
             </p>
           </div>
-          <h2 className="text-sm font-light mb-2">Rp 700.000/bulan</h2>
+          <h2 className="text-sm font-light mb-2">
+            Rp {Number(room.price).toLocaleString("id-ID")}/bulan
+          </h2>
           <p className="mb-4">{room.description}</p>
           <button
             onClick={() => navigate(`/dashboard/rooms/${room.room_id}`)}

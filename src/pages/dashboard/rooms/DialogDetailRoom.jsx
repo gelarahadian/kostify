@@ -79,10 +79,16 @@ const DialogDetailRoom = () => {
           </p>
 
           <div className="flex gap-3">
-            <button onClick={() => onDelete(room.room_id)} className="h-12 flex-1 bg-red-600 hover:bg-red-600/90 text-white rounded-md transition">
-              {deleteStatus === 'pending' ? "Loading..." : "Hapus"}
+            <button
+              onClick={() => onDelete(room.room_id)}
+              className="h-12 flex-1 bg-red-600 hover:bg-red-600/90 text-white rounded-md transition"
+            >
+              {deleteStatus === "pending" ? "Loading..." : "Hapus"}
             </button>
-            <button className="h-12 flex-1 bg-blue-600 hover:bg-blue-600/90 text-white rounded-md transition">
+            <button
+              onClick={() => navigate(`/dashboard/rooms/${room.room_id}/edit`)}
+              className="h-12 flex-1 bg-blue-600 hover:bg-blue-600/90 text-white rounded-md transition"
+            >
               Edit
             </button>
           </div>

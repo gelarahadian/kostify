@@ -1,13 +1,16 @@
 import { Icon } from "@iconify/react";
-import React, { useState } from "react";
-import { useAddRoom } from "../../../hooks/room.hook";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useEditRoomById, useGetRoomById } from "../../../hooks/room.hook";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
-const AddRoom = () => {
+const UpdateRoom = () => {
   const navigate = useNavigate();
-  const { mutate: addRoom, status } = useAddRoom();
+  const { roomId } = useParams();
+
+  const { data, isLoading } = useGetRoomById(roomId);
+  const { mutate: editRoom, status } = useEditRoomById();
   const queryClient = useQueryClient();
 
   const [form, setForm] = useState({
@@ -22,6 +25,24 @@ const AddRoom = () => {
 
   const [images, setImages] = useState([]);
 
+  /* ================= PREFILL FORM ================= */
+  useEffect(() => {
+    if (!data) return;
+
+    const room = data.data.data;
+
+    setForm({
+      room_name: room.room_name,
+      price: room.price,
+      status: room.status,
+      facilities: room.facilities,
+      description: room.description,
+      floor: room.floor,
+      capacity: room.capacity,
+    });
+  }, [data]);
+
+  /* ================= HANDLERS ================= */
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -38,46 +59,48 @@ const AddRoom = () => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append("room_name", form.room_name);
-    formData.append("price", form.price);
-    formData.append("status", form.status);
-    formData.append("facilities", form.facilities);
-    formData.append("description", form.description);
-    formData.append("floor", form.floor);
-    formData.append("capacity", form.capacity);
+    Object.entries(form).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
 
     images.forEach((file) => {
       formData.append("images", file);
     });
 
-    addRoom(formData, {
-      onSuccess: (res) => {
-        setForm({
-          room_name: "",
-          price: "",
-          status: "empty",
-          facilities: "",
-          description: "",
-          floor: "",
-          capacity: "",
-        });
-        setImages([]);
-        queryClient.invalidateQueries({
-          queryKey: ["roomsbyownerid"],
-        });
-        navigate("/dashboard/rooms");
-      },
-      onError: (err) => {
-        toast.error(err.response.data.message);
-      },
-    });
+    editRoom(
+      { roomId, data: formData },
+      {
+        onSuccess: () => {
+          toast.success("Kamar berhasil diperbarui");
+          queryClient.invalidateQueries({
+            queryKey: ["roomsbyownerid"],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["room", roomId],
+          });
+          navigate("/dashboard/rooms");
+        },
+        onError: (err) => {
+          toast.error(err.response?.data?.message || "Gagal update kamar");
+        },
+      }
+    );
   };
+
+  /* ================= LOADING ================= */
+  if (isLoading) {
+    return (
+      <div className="px-12 pt-8 text-sm text-gray-500">
+        Loading data kamar...
+      </div>
+    );
+  }
 
   return (
     <main className="px-12 pt-8">
-      <h1 className="font-semibold text-xl mb-1">Tambah Kamar</h1>
+      <h1 className="font-semibold text-xl mb-1">Edit Kamar</h1>
       <p className="text-xs text-gray-500 mb-6">
-        Informasi seluruh data kamar dan fasilitas didalamnya
+        Perbarui informasi kamar dan fasilitas
       </p>
 
       <div className="bg-white shadow-md p-9 rounded-xl">
@@ -115,7 +138,6 @@ const AddRoom = () => {
                   name="room_name"
                   value={form.room_name}
                   onChange={handleChange}
-                  placeholder="West-002"
                   className="w-full border rounded-md px-4 py-2 text-sm"
                   required
                 />
@@ -127,12 +149,12 @@ const AddRoom = () => {
                   name="price"
                   value={form.price}
                   onChange={handleChange}
-                  placeholder="900000"
                   className="w-full border rounded-md px-4 py-2 text-sm"
                   required
                 />
               </div>
             </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <label className="block text-sm font-medium mb-1">Lantai</label>
@@ -140,14 +162,15 @@ const AddRoom = () => {
                   name="floor"
                   value={form.floor}
                   onChange={handleChange}
-                  className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-md border px-4 py-2 text-sm bg-white"
                 >
-                  <option>Pilih data nya</option>
+                  <option value="">Pilih data nya</option>
                   <option value={1}>1</option>
                   <option value={2}>2</option>
                   <option value={3}>3</option>
                 </select>
               </div>
+
               <div>
                 <label className="block text-sm font-medium mb-1">
                   Kapasitas
@@ -156,9 +179,9 @@ const AddRoom = () => {
                   name="capacity"
                   value={form.capacity}
                   onChange={handleChange}
-                  className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-md border px-4 py-2 text-sm bg-white"
                 >
-                  <option>Pilih data nya</option>
+                  <option value="">Pilih data nya</option>
                   <option value={1}>1 Orang</option>
                   <option value={2}>2 Orang</option>
                   <option value={3}>3 Orang</option>
@@ -173,7 +196,6 @@ const AddRoom = () => {
                 value={form.facilities}
                 onChange={handleChange}
                 rows={3}
-                placeholder="AC, TV"
                 className="w-full border rounded-md px-4 py-2 text-sm"
               />
             </div>
@@ -185,12 +207,11 @@ const AddRoom = () => {
                 value={form.description}
                 onChange={handleChange}
                 rows={4}
-                placeholder="comfortable room"
                 className="w-full border rounded-md px-4 py-2 text-sm"
               />
             </div>
 
-            <div className="pt-3 flex justify-end space-x-3 ">
+            <div className="pt-3 flex justify-end space-x-3">
               <button
                 type="button"
                 onClick={() => navigate("/dashboard/rooms")}
@@ -202,7 +223,7 @@ const AddRoom = () => {
                 disabled={status === "pending"}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-md text-sm"
               >
-                {status === "pending" ? "Loading..." : "Submit"}
+                {status === "pending" ? "Loading..." : "Update"}
               </button>
             </div>
           </div>
@@ -212,4 +233,4 @@ const AddRoom = () => {
   );
 };
 
-export default AddRoom;
+export default UpdateRoom;

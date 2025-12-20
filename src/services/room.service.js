@@ -16,8 +16,8 @@ export const getRoomById = (id) => {
   return api.get(`/room/${id}`);
 };
 
-export const editRoomById = (idRoom) => {
-  return api.put(`rooms/edit/${idRoom}`);
+export const editRoomById = ({ roomId, data }) => {
+  return api.put(`rooms/edit/${roomId}`, data);
 };
 
 export const editRoomStatusById = (idRoom) => {

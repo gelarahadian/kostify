@@ -16,6 +16,7 @@ import FinancialReports from "./pages/dashboard/FinancialReports";
 import Helps from "./pages/Helps";
 import DialogDetailRoom from "./pages/dashboard/rooms/DialogDetailRoom";
 import AddRoom from "./pages/dashboard/rooms/AddRoom";
+import UpdateRoom from "./pages/dashboard/rooms/UpdateRoom";
 
 function App() {
   return (
@@ -41,6 +42,10 @@ function App() {
                     />
                   </Route>
                   <Route path="/dashboard/rooms/add" element={<AddRoom />} />
+                  <Route
+                    path="/dashboard/rooms/:roomId/edit"
+                    element={<UpdateRoom />}
+                  />
                   <Route path="/dashboard/residents" element={<Residents />} />
                   <Route
                     path="/dashboard/payment-reports"
