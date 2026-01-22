@@ -2,17 +2,14 @@ import { Icon } from "@iconify/react";
 import React, { useEffect, useState } from "react";
 import FilterRooms from "../../../components/Rooms/FilterRooms";
 import ListRooms from "../../../components/Rooms/ListRooms";
-import { useGetRooms, useGetRoomsByOwnerId } from "../../../hooks/room.hook";
-import DialogDetailRoom from "./DialogDetailRoom";
+import { useGetRoomsByOwnerId } from "../../../hooks/room.hook";
 import { Outlet, useNavigate } from "react-router-dom";
 
 const Rooms = () => {
   const [selectedFilter, setSelectedFilter] = useState("semua");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const { data, isLoading } = useGetRoomsByOwnerId();
-  const rooms = data?.data?.data;
-  console.log(rooms);
+  const { data: rooms, isLoading } = useGetRoomsByOwnerId();
   return (
     <main className="px-12 pt-8 relative">
       <div className="flex justify-between w-full">

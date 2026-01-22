@@ -116,7 +116,7 @@ const AddRoom = () => {
                   value={form.room_name}
                   onChange={handleChange}
                   placeholder="West-002"
-                  className="w-full border rounded-md px-4 py-2 text-sm"
+                  className="w-full border-b bg-gray-100 border-b-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-b-2 focus:border-blue-500"
                   required
                 />
               </div>
@@ -128,7 +128,7 @@ const AddRoom = () => {
                   value={form.price}
                   onChange={handleChange}
                   placeholder="900000"
-                  className="w-full border rounded-md px-4 py-2 text-sm"
+                  className="w-full border-b bg-gray-100 border-b-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-b-2 focus:border-blue-500"
                   required
                 />
               </div>
@@ -140,7 +140,7 @@ const AddRoom = () => {
                   name="floor"
                   value={form.floor}
                   onChange={handleChange}
-                  className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border-b bg-gray-100 border-b-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-b-2 focus:border-blue-500"
                 >
                   <option>Pilih data nya</option>
                   <option value={1}>1</option>
@@ -156,7 +156,7 @@ const AddRoom = () => {
                   name="capacity"
                   value={form.capacity}
                   onChange={handleChange}
-                  className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border-b bg-gray-100 border-b-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-b-2 focus:border-blue-500"
                 >
                   <option>Pilih data nya</option>
                   <option value={1}>1 Orang</option>
@@ -174,7 +174,7 @@ const AddRoom = () => {
                 onChange={handleChange}
                 rows={3}
                 placeholder="AC, TV"
-                className="w-full border rounded-md px-4 py-2 text-sm"
+                className="w-full border-b bg-gray-100 border-b-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-b-2 focus:border-blue-500"
               />
             </div>
 
@@ -186,7 +186,7 @@ const AddRoom = () => {
                 onChange={handleChange}
                 rows={4}
                 placeholder="comfortable room"
-                className="w-full border rounded-md px-4 py-2 text-sm"
+                className="w-full border-b bg-gray-100 border-b-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-b-2 focus:border-blue-500"
               />
             </div>
 

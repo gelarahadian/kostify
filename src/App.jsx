@@ -10,13 +10,15 @@ import EventBusProvider from "./components/providers/EventBusProvider";
 import DashboardLayout from "./components/DashboardLayout";
 import Home from "./pages/dashboard/Home";
 import Rooms from "./pages/dashboard/rooms/Rooms";
-import Residents from "./pages/dashboard/Residents";
 import PaymentReport from "./pages/dashboard/PaymentReport";
 import FinancialReports from "./pages/dashboard/FinancialReports";
 import Helps from "./pages/Helps";
-import DialogDetailRoom from "./pages/dashboard/rooms/DialogDetailRoom";
+import DialogDetailRoom from "./components/Rooms/DialogDetailRoom";
 import AddRoom from "./pages/dashboard/rooms/AddRoom";
 import UpdateRoom from "./pages/dashboard/rooms/UpdateRoom";
+import Tenants from "./pages/dashboard/tenants/Tenants";
+import AddTenant from "./pages/dashboard/tenants/AddTenant";
+import UpdateTenant from "./pages/dashboard/tenants/UpdateTenant";
 
 function App() {
   return (
@@ -35,6 +37,7 @@ function App() {
                 {/* Dashboard */}
                 <Route path="/dashboard" element={<DashboardLayout />}>
                   <Route index element={<Home />} />
+
                   <Route path="/dashboard/rooms" element={<Rooms />}>
                     <Route
                       path="/dashboard/rooms/:room_id"
@@ -46,7 +49,16 @@ function App() {
                     path="/dashboard/rooms/:roomId/edit"
                     element={<UpdateRoom />}
                   />
-                  <Route path="/dashboard/residents" element={<Residents />} />
+
+                  <Route path="/dashboard/tenants" element={<Tenants />} />
+                  <Route
+                    path="/dashboard/tenants/add"
+                    element={<AddTenant />}
+                  />
+                  <Route
+                    path="/dashboard/tenants/:tenantId/edit"
+                    element={<UpdateTenant />}
+                  />
                   <Route
                     path="/dashboard/payment-reports"
                     element={<PaymentReport />}

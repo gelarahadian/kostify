@@ -4,7 +4,6 @@ import { Link, useLocation } from "react-router-dom";
 
 const SidebarContent = () => {
   const location = useLocation();
-  console.log(location.pathname);
   const navs = [
     {
       type: 1,
@@ -26,7 +25,7 @@ const SidebarContent = () => {
       type: 2,
       title: "Data Penghuni",
       icon: "iconamoon:profile-fill",
-      route: "/dashboard/residents",
+      route: "/dashboard/tenants",
     },
     {
       type: 1,

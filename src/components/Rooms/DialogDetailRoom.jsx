@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useDeleteRoomById, useGetRoomById } from "../../../hooks/room.hook";
+import { useDeleteRoomById, useGetRoomById } from "../../hooks/room.hook";
 import { useQueryClient } from "@tanstack/react-query";
 
 const DialogDetailRoom = () => {
