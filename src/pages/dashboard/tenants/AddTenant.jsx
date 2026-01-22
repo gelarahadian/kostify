@@ -9,7 +9,8 @@ import { useGetRoomById, useGetRoomsByOwnerId } from "../../../hooks/room.hook";
 const AddTenant = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { mutate: addTenant, status } = useAddTenant();
+  // Menggunakan status sesuai contoh UpdateTenant
+  const { mutate: addTenant, status } = useAddTenant(); 
   const {data: rooms} = useGetRoomsByOwnerId();
 
   const [form, setForm] = useState({
@@ -33,39 +34,28 @@ const AddTenant = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    addTenant(
-      {
-        name: form.name,
-        email: form.email,
-        phone_number: form.phone_number,
-        address: form.address,
-        birth_place: form.birth_place,
-        room_id: form.room_id,
-        birth_date: form.birth_date,
-        emergency_number: form.emergency_number,
+    addTenant({
+      name: form.name,
+      email: form.email,
+      phone_number: form.phone_number,
+      address: form.address,
+      birth_place: form.birth_place,
+      room_id: Number(form.room_id),
+      birth_date: form.birth_date,
+      emergency_number: form.emergency_number,
+    }, {
+      onSuccess: () => {
+        toast.success("Penghuni berhasil ditambahkan!");
+        // Menghapus setForm disini agar langsung navigasi
+        queryClient.invalidateQueries({
+          queryKey: ["tenantsbyowner"],
+        });
+        navigate("/dashboard/tenants");
       },
-      {
-        onSuccess: (res) => {
-          setForm({
-            name: "",
-            email: "",
-            phone_number: "",
-            address: "",
-            birth_place: "",
-            room_id: "",
-            birth_date: "",
-            emergency_number: "",
-          });
-          queryClient.invalidateQueries({
-            queryKey: ["tenantsbyowner"],
-          });
-          navigate("/dashboard/tenants");
-        },
-        onError: (err) => {
-          toast.error(err.response.data.message);
-        },
-      },
-    );
+      onError: (err) => {
+        toast.error(err?.response?.data?.message || "Terjadi kesalahan");
+      }
+    });
   };
 
   return (
@@ -156,13 +146,16 @@ const AddTenant = () => {
                   value={form.room_id}
                   onChange={handleChange}
                   className="w-full border-b bg-gray-100 border-b-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-b-2 focus:border-blue-500"
+                  required
                 >
-                  <option>Pilih data nya</option>
-                  {rooms?.map((room) => (
-                    <option key={room.room_id} value={room.room_id}>
-                      {room.room_name}
-                    </option>
-                  ))}
+                  <option value="">Pilih data nya</option>
+                  {rooms
+                    ?.filter((room) => room.status === "empty")
+                    .map((room) => (
+                      <option key={room.room_id} value={room.room_id}>
+                        {room.room_name}
+                      </option>
+                    ))}
                 </select>
               </div>
             </div>

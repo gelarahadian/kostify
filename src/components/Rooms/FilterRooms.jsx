@@ -7,12 +7,12 @@ const FilterRooms = ({selectedFilter, setSelectedFilter}) => {
           lable: "Semua kamar",
         },
         {
-          type: "terisi",
+          type: "full",
           lable: "Terisi",
         },
         {
-          type: "kosing",
-          lable: "Kosing",
+          type: "empty",
+          lable: "Kosong",
         },
       ];
   return (

@@ -10,6 +10,12 @@ const Rooms = () => {
   const navigate = useNavigate();
 
   const { data: rooms, isLoading } = useGetRoomsByOwnerId();
+
+  const filteredRooms = rooms?.filter((room) => {
+    if (selectedFilter === "semua") return true;
+    return room.status === selectedFilter;
+  });
+
   return (
     <main className="px-12 pt-8 relative">
       <div className="flex justify-between w-full">
@@ -32,7 +38,7 @@ const Rooms = () => {
         selectedFilter={selectedFilter}
         setSelectedFilter={setSelectedFilter}
       />
-      <ListRooms rooms={rooms} />
+      <ListRooms rooms={filteredRooms} />
       <Outlet />
     </main>
   );

@@ -21,6 +21,7 @@ const AddRoom = () => {
   });
 
   const [images, setImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
 
   const handleChange = (e) => {
     setForm({
@@ -31,7 +32,19 @@ const AddRoom = () => {
 
   const handleImageChange = (e) => {
     if (!e.target.files) return;
-    setImages(Array.from(e.target.files));
+    const files = Array.from(e.target.files);
+    setImages(files);
+
+    // Create preview URLs
+    const previews = files.map((file) => URL.createObjectURL(file));
+    setImagePreviews(previews);
+  };
+
+  const removeImage = (index) => {
+    const newImages = images.filter((_, i) => i !== index);
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+    setImages(newImages);
+    setImagePreviews(newPreviews);
   };
 
   const handleSubmit = (e) => {
@@ -52,6 +65,7 @@ const AddRoom = () => {
 
     addRoom(formData, {
       onSuccess: (res) => {
+        toast.success("Kamar berhasil ditambahkan!");
         setForm({
           room_name: "",
           price: "",
@@ -62,13 +76,14 @@ const AddRoom = () => {
           capacity: "",
         });
         setImages([]);
+        setImagePreviews([]);
         queryClient.invalidateQueries({
           queryKey: ["roomsbyownerid"],
         });
         navigate("/dashboard/rooms");
       },
       onError: (err) => {
-        toast.error(err.response.data.message);
+        toast.error(err?.response?.data?.message || "Terjadi kesalahan");
       },
     });
   };
@@ -83,28 +98,52 @@ const AddRoom = () => {
       <div className="bg-white shadow-md p-9 rounded-xl">
         <form onSubmit={handleSubmit} className="flex gap-10">
           {/* Upload Image */}
-          <label htmlFor="input-image" className="cursor-pointer">
-            <div className="flex justify-center items-center w-60 h-60 bg-gray-200 rounded-lg">
-              <div className="text-center">
-                <Icon
-                  icon="material-symbols:cloud-upload"
-                  width={24}
-                  className="mx-auto text-gray-500"
-                />
-                <p className="text-gray-500 text-sm mt-2">
-                  Upload Image ({images.length})
-                </p>
+          <div className="w-60 space-y-3">
+            <label htmlFor="input-image" className="cursor-pointer block">
+              <div className="flex justify-center items-center w-full h-40 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+                <div className="text-center">
+                  <Icon
+                    icon="material-symbols:cloud-upload"
+                    width={24}
+                    className="mx-auto text-gray-500"
+                  />
+                  <p className="text-gray-500 text-sm mt-2">
+                    Upload Image ({images.length})
+                  </p>
+                </div>
               </div>
-            </div>
-            <input
-              id="input-image"
-              type="file"
-              accept="image/*"
-              multiple
-              className="hidden"
-              onChange={handleImageChange}
-            />
-          </label>
+              <input
+                id="input-image"
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={handleImageChange}
+              />
+            </label>
+
+            {/* Image Previews */}
+            {imagePreviews.length > 0 && (
+              <div className="grid grid-cols-2 gap-2">
+                {imagePreviews.map((preview, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={preview}
+                      alt={`Preview ${index + 1}`}
+                      className="w-full h-24 object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
+                    >
+                      <Icon icon="mdi:close" width={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           {/* Form */}
           <div className="flex-1 space-y-5">
